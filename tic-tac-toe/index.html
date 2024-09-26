@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="msg-container">
+        <p id="msg" class="hide">Winner</p>
+        <button id="new-btn">New Game</button>
+    </div>
+    <h1>Tic-Tac-Toe</h1>
+    <div class="container">
+        <div class="game">
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
+    </div>
+    <script>
+        let boxes = document.querySelectorAll(".box");
+        let resetBtn = document.querySelector("#reset-btn");
+        let newGameBtn = document.querySelector("#new-btn");
+        let msgContainer = document.querySelector(".msg-container");
+        let msg = document.querySelector("#msg");
+
+        let turnO = true; // player O starts
+        let moveCount = 0;
+
+        const winPatterns = [
+            [0, 1, 2],
+            [0, 3, 6],
+            [0, 4, 8],
+            [1, 4, 7],
+            [2, 5, 8],
+            [2, 4, 6],
+            [3, 4, 5],
+            [6, 7, 8],
+        ];
+
+        boxes.forEach((box) => {
+            box.addEventListener("click", () => {
+                if (box.innerText !== "") return; // Prevent overwriting
+                box.innerText = turnO ? "O" : "X";
+                box.disabled = true;
+                moveCount++;
+                checkWinner();
+                turnO = !turnO; // Toggle turn
+            });
+        });
+
+        const showWinner = (winner) => {
+            msg.innerText = `Congratulations, Winner is ${winner}`;
+            msgContainer.classList.remove("hide");
+        };
+
+        const checkWinner = () => {
+            for (const pattern of winPatterns) {
+                const [pos1, pos2, pos3] = pattern.map(index => boxes[index].innerText);
+                if (pos1 && pos1 === pos2 && pos1 === pos3) {
+                    showWinner(pos1);
+                    return;
+                }
+            }
+            if (moveCount === 9) {
+                msg.innerText = "It's a draw!";
+                msgContainer.classList.remove("hide");
+            }
+        };
+
+        const resetGame = () => {
+            boxes.forEach(box => {
+                box.innerText = "";
+                box.disabled = false;
+            });
+            msgContainer.classList.add("hide");
+            moveCount = 0;
+            turnO = true; // Reset to player O
+        };
+
+        resetBtn.addEventListener("click", resetGame);
+        newGameBtn.addEventListener("click", resetGame);
+    </script>
+</body>
+</html>
